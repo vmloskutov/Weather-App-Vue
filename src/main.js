@@ -12,6 +12,8 @@ var app = new Vue({
   }
 });
 
+app.message = "I have changed the data!";
+
 new Vue({
   router,
   store,
