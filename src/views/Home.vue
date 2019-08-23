@@ -7,14 +7,14 @@
           <multiselect
             v-model="value"
             label="city"
-            track-by="city"
+            track-by="city  + ', ' + country"
             placeholder="Type to search"
             open-direction="bottom"
             :options="options"
             :multiple="false"
             :searchable="true"
             :loading="isLoading"
-            :clear-on-select="false"
+            :clear-on-select="true"
             :close-on-select="true"
             :options-limit="10"
             :limit="3"
@@ -23,12 +23,22 @@
             :show-no-results="false"
             :hide-selected="false"
             @search-change="asyncFind"
+            @select="selectedCity"
           >
             <template slot="option" slot-scope="props">
-              {{ props.option.city }}</template
+              {{ props.option.city + ', ' + props.option.country}}</template
             >
           </multiselect>
+          {{info}}
         </div>
+        <div class="weather" v-if="info">
+          {{info}}
+        </div>
+      <WeatherIcon :lvl="weather"></WeatherIcon>
+      <div class="output">
+        {{weather}}
+        {{ value }}
+      </div>
       </div>
     </div>
   </div>
@@ -37,7 +47,7 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from "@/components/HelloWorld.vue";
-
+import WeatherIcon from "@/components/WeatherIcon.vue";
 import Multiselect from "vue-multiselect";
 import axios from "axios";
 
@@ -45,10 +55,12 @@ export default {
   name: "home",
   components: {
     HelloWorld,
-    Multiselect
+    Multiselect,
+    WeatherIcon
   },
   data() {
     return {
+      weather: null,
       info: null,
       value: null,
       options: [],
@@ -60,6 +72,7 @@ export default {
       return `and ${count} other places`;
     },
     asyncFind(query) {
+
       let self = this;
       this.options = [];
       this.isLoading = true;
@@ -76,18 +89,40 @@ export default {
             response =>
               (this.info = response.data.response.GeoObjectCollection.featureMember.forEach(
                 item => {
-                  self.options.push({
-                    country: item.GeoObject.description,
-                    city: item.GeoObject.name,
-                    lat: item.GeoObject.Point.pos.split(" ")[0],
-                    lon: item.GeoObject.Point.pos.split(" ")[1]
-                  });
+                  let flag = true;
+                  self.options.forEach(el => {
+                    if (el.city === item.GeoObject.name) {
+                      flag = false;
+                    }
+                  })
+                  if (flag)
+                   {
+                    self.options.push({
+                      country: item.GeoObject.description,
+                      city: item.GeoObject.name,
+                      lat: item.GeoObject.Point.pos.split(" ")[1],
+                      lon: item.GeoObject.Point.pos.split(" ")[0]
+                    });
+                  }
                 }
               ))
           );
-
       }
       this.isLoading = false;
+    },
+    selectedCity(selectedOption) {
+      axios
+        .get(`https://api.openweathermap.org/data/2.5/weather`, {
+          params: {
+            lat: selectedOption.lat,
+            lon: selectedOption.lon,
+            APPID: "31d8cd5bb9c6aec41d284a3c7b901c23"
+          }
+        })
+        .then(
+          response =>
+            (this.weather = response.data.weather[0].main)
+        );
     }
   }
 };
