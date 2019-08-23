@@ -46,6 +46,12 @@
     <div class="fog"></div>
     <div class="fog"></div>
   </div>
+  <div v-if="temperature" class="temperature">
+    {{
+          Math.floor(temperature-273.15)
+    }} °C
+  </div>
+
  </div>
 </template>
 
@@ -61,6 +67,9 @@ export default {
     };
   },
   props: {
+    temperature:{
+      required: true
+    },
     lvl: {
      required: true
    }

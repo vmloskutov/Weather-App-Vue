@@ -18,8 +18,12 @@
   }
 }
 
-.output {
+.output, .temperature {
   color: #fff;
+}
+
+.temperature {
+  font-size: 30px;
 }
 
 html { box-sizing: border-box; }

@@ -20,7 +20,7 @@
             :limit="3"
             :limit-text="limitText"
             :max-height="600"
-            :show-no-results="false"
+            :show-no-results="true"
             :hide-selected="false"
             @search-change="asyncFind"
             @select="selectedCity"
@@ -34,10 +34,15 @@
         <div class="weather" v-if="info">
           {{info}}
         </div>
-      <WeatherIcon :lvl="weather"></WeatherIcon>
+      <WeatherIcon
+
+        :lvl="weather.main"
+        :temperature="weather.temp"
+      >
+
+      </WeatherIcon>
       <div class="output">
-        {{weather}}
-        {{ value }}
+        {{weather.main}}
       </div>
       </div>
     </div>
@@ -60,7 +65,7 @@ export default {
   },
   data() {
     return {
-      weather: null,
+      weather: {},
       info: null,
       value: null,
       options: [],
@@ -121,7 +126,10 @@ export default {
         })
         .then(
           response =>
-            (this.weather = response.data.weather[0].main)
+            (this.weather = {
+              main: response.data.weather[0].main,
+              temp: response.data.main.temp
+            })
         );
     }
   }

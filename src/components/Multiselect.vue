@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <multiselect v-model="value" label="city" track-by="city" placeholder="Type to search" open-direction="bottom" :options="options" :multiple="false" :searchable="true" :loading="isLoading" :clear-on-select="false" :close-on-select="true" :options-limit="30" :limit="3" :limit-text="limitText" :max-height="600" :show-no-results="false" :hide-selected="false" @search-change="asyncFind">
+      <multiselect v-model="value" label="city" track-by="city  + ', ' + country" placeholder="Type to search" open-direction="bottom" :options="options" :multiple="false" :searchable="true" :loading="isLoading" :clear-on-select="true" :close-on-select="true" :options-limit="30" :limit="3" :limit-text="limitText" :max-height="600" :show-no-results="true" :hide-selected="false" @search-change="asyncFind">
         <template slot="option" slot-scope="props"> {{props.option.city}}</template>
       </multiselect>
     </div>
