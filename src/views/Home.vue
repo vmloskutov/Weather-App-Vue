@@ -24,9 +24,13 @@
             :hide-selected="false"
             @search-change="asyncFind"
             @select="selectedCity"
+            @open="clearSelected"
           >
-            <template slot="option" slot-scope="props">
+            <template v-if="props.option.country"  slot="option" slot-scope="props">
               {{ props.option.city + ', ' + props.option.country}}</template
+            >
+            <template v-else=""  slot="option" slot-scope="props">
+              {{ props.option.city}}</template
             >
           </multiselect>
           {{info}}
@@ -114,6 +118,9 @@ export default {
           );
       }
       this.isLoading = false;
+    },
+    clearSelected() {
+      this.value = null;
     },
     selectedCity(selectedOption) {
       axios
