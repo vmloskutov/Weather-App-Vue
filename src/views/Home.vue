@@ -26,28 +26,29 @@
             @select="selectedCity"
             @open="clearSelected"
           >
-            <template v-if="props.option.country"  slot="option" slot-scope="props">
-              {{ props.option.city + ', ' + props.option.country}}</template
+            <template
+              v-if="props.option.country"
+              slot="option"
+              slot-scope="props"
             >
-            <template v-else=""  slot="option" slot-scope="props">
-              {{ props.option.city}}</template
+              {{ props.option.city + ", " + props.option.country }}</template
+            >
+            <template v-else="" slot="option" slot-scope="props">
+              {{ props.option.city }}</template
             >
           </multiselect>
-          {{info}}
+          {{ info }}
         </div>
         <div class="weather" v-if="info">
-          {{info}}
+          {{ info }}
         </div>
-      <WeatherIcon
-
-        :lvl="weather.main"
-        :temperature="weather.temp"
-      >
-
-      </WeatherIcon>
-      <div class="output">
-        {{weather.main}}
-      </div>
+        <div v-for="item in forecast" v-bind:key="item.id">
+          <WeatherIcon :lvl="item.weather" :temperature="item.temperature">
+          </WeatherIcon>
+          <div class="output">
+            {{ item.weather + " " + item.time }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -69,7 +70,8 @@ export default {
   },
   data() {
     return {
-      weather: {},
+      forecast: [],
+      weather: null,
       info: null,
       value: null,
       options: [],
@@ -81,7 +83,6 @@ export default {
       return `and ${count} other places`;
     },
     asyncFind(query) {
-
       let self = this;
       this.options = [];
       this.isLoading = true;
@@ -103,9 +104,8 @@ export default {
                     if (el.city === item.GeoObject.name) {
                       flag = false;
                     }
-                  })
-                  if (flag)
-                   {
+                  });
+                  if (flag) {
                     self.options.push({
                       country: item.GeoObject.description,
                       city: item.GeoObject.name,
@@ -123,8 +123,10 @@ export default {
       this.value = null;
     },
     selectedCity(selectedOption) {
+      this.forecast = [];
+      let self = this;
       axios
-        .get(`https://api.openweathermap.org/data/2.5/weather`, {
+        .get(`https://api.openweathermap.org/data/2.5/forecast`, {
           params: {
             lat: selectedOption.lat,
             lon: selectedOption.lon,
@@ -133,12 +135,28 @@ export default {
         })
         .then(
           response =>
-            (this.weather = {
-              main: response.data.weather[0].main,
-              temp: response.data.main.temp
-            })
+            (this.weather = response.data.list.forEach(item => {
+              self.forecast.push({
+                time: convertTimestamp(item.dt),
+                temperature: item.main.temp,
+                weather: item.weather[0].main
+              });
+            }))
         );
     }
   }
 };
+
+function convertTimestamp(timestamp) {
+  var d = new Date(timestamp * 1000 - 10800000), // Convert the passed timestamp to milliseconds
+    hh = d.getHours(),
+    h = hh,
+    min = ("0" + d.getMinutes()).slice(-2), // Add leading 0.
+    time;
+
+  // ie: 2013-02-18, 8:35 AM
+  time = h + ":" + min;
+
+  return time;
+}
 </script>

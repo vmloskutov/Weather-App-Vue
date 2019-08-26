@@ -40,39 +40,35 @@
       <div class="rain"></div>
     </div>
 
-  <div v-if="lvl === 'Fog' || lvl === 'Mist' || lvl === 'Smoke'" class="icon foggy">
-    <div class="cloud"></div>
-    <div class="fog"></div>
-    <div class="fog"></div>
-    <div class="fog"></div>
+    <div
+      v-if="lvl === 'Fog' || lvl === 'Mist' || lvl === 'Smoke'"
+      class="icon foggy"
+    >
+      <div class="cloud"></div>
+      <div class="fog"></div>
+      <div class="fog"></div>
+      <div class="fog"></div>
+    </div>
+    <div v-if="temperature" class="temperature">
+      {{ Math.floor(temperature - 273.15) }}°C
+    </div>
   </div>
-  <div v-if="temperature" class="temperature">
-    {{
-          Math.floor(temperature-273.15)
-    }} °C
-  </div>
-
- </div>
 </template>
 
 <script>
 export default {
   name: "weather",
-  components: {
-
-  },
+  components: {},
   data() {
-    return {
-
-    };
+    return {};
   },
   props: {
-    temperature:{
+    temperature: {
       required: true
     },
     lvl: {
-     required: true
-   }
- }
+      required: true
+    }
+  }
 };
 </script>
