@@ -32,12 +32,12 @@ html *:before,
 html *:after { box-sizing: inherit; }
 
 body {
-  max-width: 42em;
+  //width: 100%;
+  //max-width: 42em;
   padding: 2em;
   margin: 0 auto;
   color: #161616;
   font-family: 'Roboto', sans-serif;
-  text-align: center;
   background-color: currentColor;
 }
 
@@ -55,8 +55,19 @@ a {
 }
 p { margin: 1.375rem 0; }
 
+.carousel-caption {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  align-items: center;
+  color: #161616;
+}
 
+.carousel-control-next, .carousel-control-prev {
+  width: 2%;
 
+}
 
 .icon {
   position: relative;

@@ -3,53 +3,90 @@
     <div class="container">
       <HelloWorld msg="Weather App" />
       <div>
-        <div>
-          <multiselect
-            v-model="value"
-            label="city"
-            track-by="city  + ', ' + country"
-            placeholder="Type to search"
-            open-direction="bottom"
-            :options="options"
-            :multiple="false"
-            :searchable="true"
-            :loading="isLoading"
-            :clear-on-select="true"
-            :close-on-select="true"
-            :options-limit="10"
-            :limit="3"
-            :limit-text="limitText"
-            :max-height="600"
-            :show-no-results="true"
-            :hide-selected="false"
-            @search-change="asyncFind"
-            @select="selectedCity"
-            @open="clearSelected"
+        <multiselect
+          v-model="value"
+          label="city"
+          track-by="city  + ', ' + country"
+          placeholder="Type to search"
+          open-direction="bottom"
+          :options="options"
+          :multiple="false"
+          :searchable="true"
+          :loading="isLoading"
+          :clear-on-select="true"
+          :close-on-select="true"
+          :options-limit="10"
+          :limit="3"
+          :limit-text="limitText"
+          :max-height="600"
+          :show-no-results="true"
+          :hide-selected="false"
+          @search-change="asyncFind"
+          @select="selectedCity"
+          @open="clearSelected"
+        >
+          <template
+            v-if="props.option.country"
+            slot="option"
+            slot-scope="props"
           >
-            <template
-              v-if="props.option.country"
-              slot="option"
-              slot-scope="props"
-            >
-              {{ props.option.city + ", " + props.option.country }}</template
-            >
-            <template v-else="" slot="option" slot-scope="props">
-              {{ props.option.city }}</template
-            >
-          </multiselect>
-          {{ info }}
-        </div>
-        <div class="weather" v-if="info">
-          {{ info }}
-        </div>
-        <div v-for="item in forecast" v-bind:key="item.id">
+            {{ props.option.city + ", " + props.option.country }}</template
+          >
+          <template v-else="" slot="option" slot-scope="props">
+            {{ props.option.city }}</template
+          >
+        </multiselect>
+        {{ info }}
+      </div>
+    </div>
+    <div>
+      <!-- <b-carousel
+    class="container"
+        id="carousel-1"
+        v-model="slide"
+        indicators
+        :interval="0"
+        img-width="1024"
+        img-height="600"
+        background="#161616"
+        style="position: relative; align-items: center;"
+        @sliding-start="onSlideStart"
+        @sliding-end="onSlideEnd"
+      >
+        <b-carousel-slide img-blank img-alt="Blank image" v-for="item in forecast" v-bind:key="item.id">
+          <WeatherIcon :lvl="item.weather" :temperature="item.temperature" style="align-items: center; justify-content: center;">
+          </WeatherIcon>
+          <div class="output">
+            {{ item.weather + " " + item.time }}
+          </div>
+        </b-carousel-slide>
+      </b-carousel> -->
+      <b-carousel
+        class="container"
+        id="carousel-1"
+        v-model="slide"
+        :interval="0"
+        controls
+        indicators
+        background="#161616"
+        img-width="1024"
+        img-height="480"
+        style="text-shadow: 1px 1px 2px #333;"
+        @sliding-start="onSlideStart"
+        @sliding-end="onSlideEnd"
+      >
+        <b-carousel-slide
+          v-for="item in forecast"
+          v-bind:key="item.id"
+          img-blank
+        >
           <WeatherIcon :lvl="item.weather" :temperature="item.temperature">
           </WeatherIcon>
           <div class="output">
             {{ item.weather + " " + item.time }}
           </div>
-        </div>
-      </div>
+        </b-carousel-slide>
+      </b-carousel>
     </div>
   </div>
 </template>
@@ -75,10 +112,18 @@ export default {
       info: null,
       value: null,
       options: [],
-      isLoading: false
+      isLoading: false,
+      slide: 0,
+      sliding: null
     };
   },
   methods: {
+    onSlideStart(slide) {
+      this.sliding = true;
+    },
+    onSlideEnd(slide) {
+      this.sliding = false;
+    },
     limitText(count) {
       return `and ${count} other places`;
     },
