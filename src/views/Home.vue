@@ -54,7 +54,7 @@
         @sliding-end="onSlideEnd"
       >
         <b-carousel-slide
-          v-for="item in forecast"
+          v-for="(item, index) in forecast"
           v-bind:key="item.id"
           img-blank
         >
@@ -63,6 +63,8 @@
           </div>
           <WeatherIcon :lvl="item.weather" :temperature="item.temperature">
           </WeatherIcon>
+          <!-- <router-link :to="`?day=${item.time.date}&lat=${item.place.lat}&lon=${item.place.lon}`"></router-link> -->
+          <!-- <router-link :to="{name: 'forecast', params:{day: item.time.date, lat: item.place.lat, lon: item.place.lon}}"></router-link> -->
         </b-carousel-slide>
       </b-carousel>
     </div>
@@ -96,38 +98,13 @@ export default {
       sliding: null
     };
   },
-  computed: {
-    getWeekDay(item) {
-      switch (item.time.weekday) {
-        case 1:
-          item.time.weekday = "Понедельник";
-          break;
-        case 2:
-          item.time.weekday = "Вторник";
-          break;
-        case 3:
-          item.time.weekday = "Среда";
-          break;
-        case 4:
-          item.time.weekday = "Четверг";
-          break;
-        case 5:
-          item.time.weekday = "Пятница";
-          break;
-        case 6:
-          item.time.weekday = "Суббота";
-          break;
-        case 7:
-          item.time.weekday = "Воскресенье";
-          break;
-      }
-    }
-  },
   methods: {
     onSlideStart(slide) {
+      this.$router.push({ path: '/', query: { day: this.forecast[slide].time.date, time:this.forecast[slide].time.time, lat: this.forecast[slide].place.lat, lon: this.forecast[slide].place.lon} })
       this.sliding = true;
     },
     onSlideEnd(slide) {
+      console.log();
       this.sliding = false;
     },
     limitText(count) {
@@ -189,7 +166,12 @@ export default {
             (this.weather = response.data.list.forEach(item => {
               moment.locale("ru");
               self.forecast.push({
+                place: {
+                  lat: selectedOption.lat,
+                  lon: selectedOption.lon
+                },
                 time: {
+                  date: moment(item.dt*1000).format("l"),
                   time: moment(item.dt * 1000).format("HH:mm"),
                   weekday: capitalize(
                     moment.weekdays(new Date(item.dt * 1000).getDay())
