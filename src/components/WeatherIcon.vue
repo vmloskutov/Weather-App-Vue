@@ -64,8 +64,10 @@ export default {
   },
   created() {
     let arr = document.querySelector("#carousel-1").getElementsByTagName("a");
-    arr =[].slice.call(arr);
-    arr.forEach(item => {item.style.display = "flex";});
+    arr = [].slice.call(arr);
+    arr.forEach(item => {
+      item.style.display = "flex";
+    });
   },
   props: {
     temperature: {

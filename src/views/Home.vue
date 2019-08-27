@@ -6,7 +6,7 @@
         <multiselect
           v-model="value"
           label="city"
-          track-by="city  + ', ' + country"
+          track-by="city"
           placeholder="Type to search"
           open-direction="bottom"
           :options="options"
@@ -75,6 +75,7 @@ import HelloWorld from "@/components/HelloWorld.vue";
 import WeatherIcon from "@/components/WeatherIcon.vue";
 import Multiselect from "vue-multiselect";
 import axios from "axios";
+var moment = require("moment");
 
 export default {
   name: "home",
@@ -186,35 +187,13 @@ export default {
         .then(
           response =>
             (this.weather = response.data.list.forEach(item => {
-              let weekday;
-              switch (new Date(item.dt * 1000 - 10800000).getDay()) {
-                case 1:
-                  weekday = "Понедельник";
-                  break;
-                case 2:
-                  weekday = "Вторник";
-                  break;
-                case 3:
-                  weekday = "Среда";
-                  break;
-                case 4:
-                  weekday = "Четверг";
-                  break;
-                case 5:
-                  weekday = "Пятница";
-                  break;
-                case 6:
-                  weekday = "Суббота";
-                  break;
-                case 0:
-                  weekday = "Воскресенье";
-                  break;
-              }
-
+              moment.locale("ru");
               self.forecast.push({
                 time: {
-                  time: convertTimestamp(item.dt),
-                  weekday: weekday
+                  time: moment(item.dt * 1000).format("HH:mm"),
+                  weekday: capitalize(
+                    moment.weekdays(new Date(item.dt * 1000).getDay())
+                  )
                 },
 
                 temperature: item.main.temp,
@@ -226,16 +205,7 @@ export default {
   }
 };
 
-function convertTimestamp(timestamp) {
-  var d = new Date(timestamp * 1000 - 10800000), // Convert the passed timestamp to milliseconds
-    hh = d.getHours(),
-    h = hh,
-    min = ("0" + d.getMinutes()).slice(-2), // Add leading 0.
-    time;
-
-  // ie: 2013-02-18, 8:35 AM
-  time = h + ":" + min;
-
-  return time;
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 </script>
