@@ -55,6 +55,12 @@ a {
 }
 p { margin: 1.375rem 0; }
 
+#carousel-1 {
+  a {
+    display: none;
+  }
+}
+
 .carousel-caption {
   top: 0;
   bottom: 0;

@@ -40,37 +40,15 @@
       </div>
     </div>
     <div>
-      <!-- <b-carousel
-    class="container"
-        id="carousel-1"
-        v-model="slide"
-        indicators
-        :interval="0"
-        img-width="1024"
-        img-height="600"
-        background="#161616"
-        style="position: relative; align-items: center;"
-        @sliding-start="onSlideStart"
-        @sliding-end="onSlideEnd"
-      >
-        <b-carousel-slide img-blank img-alt="Blank image" v-for="item in forecast" v-bind:key="item.id">
-          <WeatherIcon :lvl="item.weather" :temperature="item.temperature" style="align-items: center; justify-content: center;">
-          </WeatherIcon>
-          <div class="output">
-            {{ item.weather + " " + item.time }}
-          </div>
-        </b-carousel-slide>
-      </b-carousel> -->
       <b-carousel
         class="container"
         id="carousel-1"
         v-model="slide"
         :interval="0"
         controls
-        indicators
         background="#161616"
         img-width="1024"
-        img-height="480"
+        img-height="300"
         style="text-shadow: 1px 1px 2px #333;"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
@@ -80,11 +58,11 @@
           v-bind:key="item.id"
           img-blank
         >
+          <div class="output">
+            {{ item.time.weekday + " " + item.time.time }}
+          </div>
           <WeatherIcon :lvl="item.weather" :temperature="item.temperature">
           </WeatherIcon>
-          <div class="output">
-            {{ item.weather + " " + item.time }}
-          </div>
         </b-carousel-slide>
       </b-carousel>
     </div>
@@ -116,6 +94,33 @@ export default {
       slide: 0,
       sliding: null
     };
+  },
+  computed: {
+    getWeekDay(item) {
+      switch (item.time.weekday) {
+        case 1:
+          item.time.weekday = "Понедельник";
+          break;
+        case 2:
+          item.time.weekday = "Вторник";
+          break;
+        case 3:
+          item.time.weekday = "Среда";
+          break;
+        case 4:
+          item.time.weekday = "Четверг";
+          break;
+        case 5:
+          item.time.weekday = "Пятница";
+          break;
+        case 6:
+          item.time.weekday = "Суббота";
+          break;
+        case 7:
+          item.time.weekday = "Воскресенье";
+          break;
+      }
+    }
   },
   methods: {
     onSlideStart(slide) {
@@ -181,8 +186,37 @@ export default {
         .then(
           response =>
             (this.weather = response.data.list.forEach(item => {
+              let weekday;
+              switch (new Date(item.dt * 1000 - 10800000).getDay()) {
+                case 1:
+                  weekday = "Понедельник";
+                  break;
+                case 2:
+                  weekday = "Вторник";
+                  break;
+                case 3:
+                  weekday = "Среда";
+                  break;
+                case 4:
+                  weekday = "Четверг";
+                  break;
+                case 5:
+                  weekday = "Пятница";
+                  break;
+                case 6:
+                  weekday = "Суббота";
+                  break;
+                case 0:
+                  weekday = "Воскресенье";
+                  break;
+              }
+
               self.forecast.push({
-                time: convertTimestamp(item.dt),
+                time: {
+                  time: convertTimestamp(item.dt),
+                  weekday: weekday
+                },
+
                 temperature: item.main.temp,
                 weather: item.weather[0].main
               });
