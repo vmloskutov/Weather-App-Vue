@@ -81,12 +81,35 @@ p { margin: 1.375rem 0; }
 }
 
 
+
+.weekday-forecast {
+  display: block;
+  .weather-row{
+    display: flex;
+    justify-content: space-around;
+    .weather-icon {
+
+      .weather-day {
+        .output {
+          margin-bottom: 10px;
+        }
+        display: inline-block;
+        //margin-right: 30px;
+      }
+    }
+  }
+  .weekday-label {
+    color: white;
+    margin-bottom: 55px;
+  }
+}
+
 .icon {
   position: relative;
   display: inline-block;
-  width: 12em;
-  height: 10em;
-  font-size: 1em; /* control icon size here */
+  width: 5em;
+  height: 5em;
+  font-size: 0.5em; /* control icon size here */
 }
 
 .cloud {
