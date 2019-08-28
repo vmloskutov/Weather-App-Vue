@@ -47,6 +47,7 @@
         :interval="0"
         indicators
         controls
+        label-goto-slide="3"
         background="#161616"
         img-width="1024"
         img-height="300"
@@ -61,7 +62,7 @@
         >
           <div class="weekday-forecast">
             <div class="weekday-label">
-              {{ item[1].time.weekday }}
+              {{ item[0].time.weekday }}
             </div>
             <div class="weather-row">
               <div class="weather-icon" v-for="i in item" v-bind:key="i.id">
@@ -71,8 +72,6 @@
                   </div>
                   <WeatherIcon :lvl="i.weather" :temperature="i.temperature">
                   </WeatherIcon>
-                  <!-- <router-link :to="`?day=${item.time.date}&lat=${item.place.lat}&lon=${item.place.lon}`"></router-link> -->
-                  <!-- <router-link :to="{name: 'forecast', params:{day: item.time.date, lat: item.place.lat, lon: item.place.lon}}"></router-link> -->
                 </div>
               </div>
             </div>
@@ -111,14 +110,12 @@ export default {
     };
   },
   created() {
-    console.log(this.$route.fullPath);
     if (this.$route.fullPath !== "/") {
       let path = this.$route.fullPath;
       let arr = path.split("&");
       arr[0] = arr[0].replace(/\/\?day=/, "");
       arr[1] = arr[1].replace(/lat=/, "");
       arr[2] = arr[2].replace(/lon=/, "");
-      console.log(arr);
       this.forecast = [];
       let day = [];
       let tempDate = null;
@@ -173,17 +170,33 @@ export default {
               }
             }))
         );
+      //  this.value = {city :"gfchv"};
+      axios
+        .get(`https://geocode-maps.yandex.ru/1.x/`, {
+          params: {
+            format: "json",
+            apikey: "b1998c24-d2dc-4cd0-888c-b100bf713440",
+            geocode: arr[2] + "," + arr[1]
+          }
+        })
+        .then(
+          response =>
+            (this.value = {
+              city:
+                response.data.response.GeoObjectCollection.featureMember[0]
+                  .GeoObject.name
+            })
+        );
     }
-     this.sliding = true;
   },
   methods: {
     onSlideStart(slide) {
       this.$router.push({
         path: "/",
         query: {
-          day: this.forecast[slide+1][0].time.date,
-          lat: this.forecast[slide+1][0].place.lat,
-          lon: this.forecast[slide+1][0].place.lon
+          day: this.forecast[slide + 1][0].time.date,
+          lat: this.forecast[slide + 1][0].place.lat,
+          lon: this.forecast[slide + 1][0].place.lon
         }
       });
       this.sliding = true;
@@ -289,14 +302,14 @@ export default {
               }
             }))
         );
-        this.$router.push({
-          path: "/",
-          query: {
-            day: moment(new Date).format("l"),
-            lat: selectedOption.lat,
-            lon: selectedOption.lon
-          }
-        });
+      this.$router.push({
+        path: "/",
+        query: {
+          day: moment(new Date()).format("l"),
+          lat: selectedOption.lat,
+          lon: selectedOption.lon
+        }
+      });
     }
   }
 };
