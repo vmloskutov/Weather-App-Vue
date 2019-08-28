@@ -54,6 +54,7 @@
         style="text-shadow: 1px 1px 2px #333;"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
+        ref="myCarousel"
       >
         <b-carousel-slide
           v-for="(item, index) in forecast.slice(1)"
@@ -109,7 +110,7 @@ export default {
       sliding: null
     };
   },
-  created() {
+  mounted() {
     if (this.$route.fullPath !== "/") {
       let path = this.$route.fullPath;
       let arr = path.split("&");
@@ -187,6 +188,13 @@ export default {
                   .GeoObject.name
             })
         );
+        let tempDay = moment(arr[0], "DD.MM.YYYY");
+        let tempToday = moment(new Date).format("l");
+        var diff = tempDay.diff(tempToday);
+        diff = new moment.duration(diff);
+        console.log(diff.asDays());
+
+        this.$refs.myCarousel.index = diff.asDays();
     }
   },
   methods: {
