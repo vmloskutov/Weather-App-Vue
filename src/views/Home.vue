@@ -45,6 +45,7 @@
         id="carousel-1"
         v-model="slide"
         :interval="0"
+        indicators
         controls
         background="#161616"
         img-width="1024"
@@ -59,22 +60,22 @@
           img-blank
         >
           <div class="weekday-forecast">
-              <div class="weekday-label">
-                {{item[1].time.weekday}}
-              </div>
-              <div class="weather-row">
-                <div class="weather-icon"v-for="i in item">
-                  <div class="weather-day" >
-                    <div class="output">
-                      {{i.time.time }}
-                    </div>
-                    <WeatherIcon :lvl="i.weather" :temperature="i.temperature" >
-                    </WeatherIcon>
-                    <!-- <router-link :to="`?day=${item.time.date}&lat=${item.place.lat}&lon=${item.place.lon}`"></router-link> -->
-                    <!-- <router-link :to="{name: 'forecast', params:{day: item.time.date, lat: item.place.lat, lon: item.place.lon}}"></router-link> -->
+            <div class="weekday-label">
+              {{ item[1].time.weekday }}
+            </div>
+            <div class="weather-row">
+              <div class="weather-icon" v-for="i in item" v-bind:key="i.id">
+                <div class="weather-day">
+                  <div class="output">
+                    {{ i.time.time }}
                   </div>
+                  <WeatherIcon :lvl="i.weather" :temperature="i.temperature">
+                  </WeatherIcon>
+                  <!-- <router-link :to="`?day=${item.time.date}&lat=${item.place.lat}&lon=${item.place.lon}`"></router-link> -->
+                  <!-- <router-link :to="{name: 'forecast', params:{day: item.time.date, lat: item.place.lat, lon: item.place.lon}}"></router-link> -->
                 </div>
               </div>
+            </div>
           </div>
         </b-carousel-slide>
       </b-carousel>
@@ -109,13 +110,85 @@ export default {
       sliding: null
     };
   },
+  created() {
+    console.log(this.$route.fullPath);
+    if (this.$route.fullPath !== "/") {
+      let path = this.$route.fullPath;
+      let arr = path.split("&");
+      arr[0] = arr[0].replace(/\/\?day=/, "");
+      arr[1] = arr[1].replace(/lat=/, "");
+      arr[2] = arr[2].replace(/lon=/, "");
+      console.log(arr);
+      this.forecast = [];
+      let day = [];
+      let tempDate = null;
+      let self = this;
+      axios
+        .get(`https://api.openweathermap.org/data/2.5/forecast`, {
+          params: {
+            lat: arr[1],
+            lon: arr[2],
+            APPID: "31d8cd5bb9c6aec41d284a3c7b901c23"
+          }
+        })
+        .then(
+          response =>
+            (this.weather = response.data.list.forEach(item => {
+              moment.locale("ru");
+              if (tempDate !== moment(item.dt * 1000).format("l")) {
+                self.forecast.push(day);
+                day = [];
+                tempDate = moment(item.dt * 1000).format("l");
+                day.push({
+                  place: {
+                    lat: arr[1],
+                    lon: arr[2]
+                  },
+                  time: {
+                    date: moment(item.dt * 1000).format("l"),
+                    time: moment(item.dt * 1000).format("HH:mm"),
+                    weekday: capitalize(
+                      moment.weekdays(new Date(item.dt * 1000).getDay())
+                    )
+                  },
+                  temperature: item.main.temp,
+                  weather: item.weather[0].main
+                });
+              } else {
+                day.push({
+                  place: {
+                    lat: arr[1],
+                    lon: arr[2]
+                  },
+                  time: {
+                    date: moment(item.dt * 1000).format("l"),
+                    time: moment(item.dt * 1000).format("HH:mm"),
+                    weekday: capitalize(
+                      moment.weekdays(new Date(item.dt * 1000).getDay())
+                    )
+                  },
+                  temperature: item.main.temp,
+                  weather: item.weather[0].main
+                });
+              }
+            }))
+        );
+    }
+     this.sliding = true;
+  },
   methods: {
     onSlideStart(slide) {
-      this.$router.push({ path: '/', query: { day: this.forecast[slide][0].time.date, lat: this.forecast[slide][0].place.lat, lon: this.forecast[slide][0].place.lon} })
+      this.$router.push({
+        path: "/",
+        query: {
+          day: this.forecast[slide+1][0].time.date,
+          lat: this.forecast[slide+1][0].place.lat,
+          lon: this.forecast[slide+1][0].place.lon
+        }
+      });
       this.sliding = true;
     },
     onSlideEnd(slide) {
-      console.log();
       this.sliding = false;
     },
     limitText(count) {
@@ -178,17 +251,17 @@ export default {
           response =>
             (this.weather = response.data.list.forEach(item => {
               moment.locale("ru");
-              if (tempDate !== moment(item.dt*1000).format("l")) {
+              if (tempDate !== moment(item.dt * 1000).format("l")) {
                 self.forecast.push(day);
                 day = [];
-                tempDate = moment(item.dt*1000).format("l");
+                tempDate = moment(item.dt * 1000).format("l");
                 day.push({
                   place: {
                     lat: selectedOption.lat,
                     lon: selectedOption.lon
                   },
                   time: {
-                    date: moment(item.dt*1000).format("l"),
+                    date: moment(item.dt * 1000).format("l"),
                     time: moment(item.dt * 1000).format("HH:mm"),
                     weekday: capitalize(
                       moment.weekdays(new Date(item.dt * 1000).getDay())
@@ -204,7 +277,7 @@ export default {
                     lon: selectedOption.lon
                   },
                   time: {
-                    date: moment(item.dt*1000).format("l"),
+                    date: moment(item.dt * 1000).format("l"),
                     time: moment(item.dt * 1000).format("HH:mm"),
                     weekday: capitalize(
                       moment.weekdays(new Date(item.dt * 1000).getDay())
@@ -214,25 +287,16 @@ export default {
                   weather: item.weather[0].main
                 });
               }
-              // self.forecast.push({
-              //   place: {
-              //     lat: selectedOption.lat,
-              //     lon: selectedOption.lon
-              //   },
-              //   time: {
-              //     date: moment(item.dt*1000).format("l"),
-              //     time: moment(item.dt * 1000).format("HH:mm"),
-              //     weekday: capitalize(
-              //       moment.weekdays(new Date(item.dt * 1000).getDay())
-              //     )
-              //   },
-              //
-              //   temperature: item.main.temp,
-              //   weather: item.weather[0].main
-              // });
-              console.log(self.forecast);
             }))
         );
+        this.$router.push({
+          path: "/",
+          query: {
+            day: moment(new Date).format("l"),
+            lat: selectedOption.lat,
+            lon: selectedOption.lon
+          }
+        });
     }
   }
 };
