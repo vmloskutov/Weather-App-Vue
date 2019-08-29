@@ -185,7 +185,7 @@ export default {
             (this.value = {
               city:
                 response.data.response.GeoObjectCollection.featureMember[0]
-                  .GeoObject.name
+                  .GeoObject.description
             })
         );
         let tempDay = moment(arr[0], "DD.MM.YYYY");
@@ -318,6 +318,7 @@ export default {
           lon: selectedOption.lon
         }
       });
+      this.$refs.myCarousel.index = 0
     }
   }
 };
