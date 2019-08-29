@@ -130,49 +130,69 @@ export default {
             APPID: "31d8cd5bb9c6aec41d284a3c7b901c23"
           }
         })
-        .then(
-          response =>
-            { this.timezone = response.data.city.timezone;
-              response.data.list.forEach(item => {
-              moment.locale("ru");
-              if (tempDate !== moment((item.dt - 10800 + this.timezone) * 1000).format("l")) {
-                self.forecast.push(day);
-                day = [];
-                tempDate = moment((item.dt - 10800 + this.timezone) * 1000).format("l");
-                day.push({
-                  place: {
-                    lat: arr[1],
-                    lon: arr[2]
-                  },
-                  time: {
-                    date: moment((item.dt - 10800 + this.timezone) * 1000).format("l"),
-                    time: moment((item.dt - 10800 + this.timezone) * 1000).format("HH:mm"),
-                    weekday: capitalize(
-                      moment.weekdays(new Date((item.dt - 10800 + this.timezone) * 1000).getDay())
+        .then(response => {
+          this.timezone = response.data.city.timezone;
+          response.data.list.forEach(item => {
+            moment.locale("ru");
+            if (
+              tempDate !==
+              moment((item.dt - 10800 + this.timezone) * 1000).format("l")
+            ) {
+              self.forecast.push(day);
+              day = [];
+              tempDate = moment(
+                (item.dt - 10800 + this.timezone) * 1000
+              ).format("l");
+              day.push({
+                place: {
+                  lat: arr[1],
+                  lon: arr[2]
+                },
+                time: {
+                  date: moment((item.dt - 10800 + this.timezone) * 1000).format(
+                    "l"
+                  ),
+                  time: moment((item.dt - 10800 + this.timezone) * 1000).format(
+                    "HH:mm"
+                  ),
+                  weekday: capitalize(
+                    moment.weekdays(
+                      new Date(
+                        (item.dt - 10800 + this.timezone) * 1000
+                      ).getDay()
                     )
-                  },
-                  temperature: item.main.temp,
-                  weather: item.weather[0].main
-                });
-              } else {
-                day.push({
-                  place: {
-                    lat: arr[1],
-                    lon: arr[2]
-                  },
-                  time: {
-                    date: moment((item.dt - 10800 + this.timezone) * 1000).format("l"),
-                    time: moment((item.dt - 10800 + this.timezone) * 1000).format("HH:mm"),
-                    weekday: capitalize(
-                      moment.weekdays(new Date((item.dt - 10800 + this.timezone) * 1000).getDay())
+                  )
+                },
+                temperature: item.main.temp,
+                weather: item.weather[0].main
+              });
+            } else {
+              day.push({
+                place: {
+                  lat: arr[1],
+                  lon: arr[2]
+                },
+                time: {
+                  date: moment((item.dt - 10800 + this.timezone) * 1000).format(
+                    "l"
+                  ),
+                  time: moment((item.dt - 10800 + this.timezone) * 1000).format(
+                    "HH:mm"
+                  ),
+                  weekday: capitalize(
+                    moment.weekdays(
+                      new Date(
+                        (item.dt - 10800 + this.timezone) * 1000
+                      ).getDay()
                     )
-                  },
-                  temperature: item.main.temp,
-                  weather: item.weather[0].main
-                });
-              }
-            })}
-        );
+                  )
+                },
+                temperature: item.main.temp,
+                weather: item.weather[0].main
+              });
+            }
+          });
+        });
       //  this.value = {city :"gfchv"};
       axios
         .get(`https://geocode-maps.yandex.ru/1.x/`, {
@@ -190,13 +210,13 @@ export default {
                   .GeoObject.description
             })
         );
-        let tempDay = moment(arr[0], "DD.MM.YYYY");
-        let tempToday = moment(new Date).format("l");
-        var diff = tempDay.diff(tempToday);
-        diff = new moment.duration(diff);
-        console.log(diff.asDays());
+      let tempDay = moment(arr[0], "DD.MM.YYYY");
+      let tempToday = moment(new Date()).format("l");
+      var diff = tempDay.diff(tempToday);
+      diff = new moment.duration(diff);
+      console.log(diff.asDays());
 
-        this.$refs.myCarousel.index = diff.asDays();
+      this.$refs.myCarousel.index = diff.asDays();
     }
   },
   methods: {
@@ -270,49 +290,69 @@ export default {
             APPID: "31d8cd5bb9c6aec41d284a3c7b901c23"
           }
         })
-        .then(
-          response =>
-            { this.timezone = response.data.city.timezone;
-              response.data.list.forEach(item => {
-              moment.locale("ru");
-              if (tempDate !== moment((item.dt - 10800 + this.timezone) * 1000).format("l")) {
-                self.forecast.push(day);
-                day = [];
-                tempDate = moment((item.dt - 10800 + this.timezone) * 1000).format("l");
-                day.push({
-                  place: {
-                    lat: selectedOption.lat,
-                    lon: selectedOption.lon
-                  },
-                  time: {
-                    date: moment((item.dt - 10800 + this.timezone) * 1000).format("l"),
-                    time: moment((item.dt - 10800 + this.timezone) * 1000).format("HH:mm"),
-                    weekday: capitalize(
-                      moment.weekdays(new Date((item.dt - 10800 + this.timezone) * 1000).getDay())
+        .then(response => {
+          this.timezone = response.data.city.timezone;
+          response.data.list.forEach(item => {
+            moment.locale("ru");
+            if (
+              tempDate !==
+              moment((item.dt - 10800 + this.timezone) * 1000).format("l")
+            ) {
+              self.forecast.push(day);
+              day = [];
+              tempDate = moment(
+                (item.dt - 10800 + this.timezone) * 1000
+              ).format("l");
+              day.push({
+                place: {
+                  lat: selectedOption.lat,
+                  lon: selectedOption.lon
+                },
+                time: {
+                  date: moment((item.dt - 10800 + this.timezone) * 1000).format(
+                    "l"
+                  ),
+                  time: moment((item.dt - 10800 + this.timezone) * 1000).format(
+                    "HH:mm"
+                  ),
+                  weekday: capitalize(
+                    moment.weekdays(
+                      new Date(
+                        (item.dt - 10800 + this.timezone) * 1000
+                      ).getDay()
                     )
-                  },
-                  temperature: item.main.temp,
-                  weather: item.weather[0].main
-                });
-              } else {
-                day.push({
-                  place: {
-                    lat: selectedOption.lat,
-                    lon: selectedOption.lon
-                  },
-                  time: {
-                    date: moment((item.dt - 10800 + this.timezone) * 1000).format("l"),
-                    time: moment((item.dt - 10800 + this.timezone) * 1000).format("HH:mm"),
-                    weekday: capitalize(
-                      moment.weekdays(new Date((item.dt - 10800 + this.timezone) * 1000).getDay())
+                  )
+                },
+                temperature: item.main.temp,
+                weather: item.weather[0].main
+              });
+            } else {
+              day.push({
+                place: {
+                  lat: selectedOption.lat,
+                  lon: selectedOption.lon
+                },
+                time: {
+                  date: moment((item.dt - 10800 + this.timezone) * 1000).format(
+                    "l"
+                  ),
+                  time: moment((item.dt - 10800 + this.timezone) * 1000).format(
+                    "HH:mm"
+                  ),
+                  weekday: capitalize(
+                    moment.weekdays(
+                      new Date(
+                        (item.dt - 10800 + this.timezone) * 1000
+                      ).getDay()
                     )
-                  },
-                  temperature: item.main.temp,
-                  weather: item.weather[0].main
-                });
-              }
-            })}
-        );
+                  )
+                },
+                temperature: item.main.temp,
+                weather: item.weather[0].main
+              });
+            }
+          });
+        });
       this.$router.push({
         path: "/",
         query: {
@@ -321,7 +361,7 @@ export default {
           lon: selectedOption.lon
         }
       });
-      this.$refs.myCarousel.index = 0
+      this.$refs.myCarousel.index = 0;
     }
   }
 };
