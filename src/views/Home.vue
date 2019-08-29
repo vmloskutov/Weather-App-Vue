@@ -100,6 +100,7 @@ export default {
   },
   data() {
     return {
+      timezone: null,
       forecast: [],
       weather: null,
       info: null,
@@ -131,22 +132,23 @@ export default {
         })
         .then(
           response =>
-            (this.weather = response.data.list.forEach(item => {
+            { this.timezone = response.data.city.timezone;
+              response.data.list.forEach(item => {
               moment.locale("ru");
-              if (tempDate !== moment(item.dt * 1000).format("l")) {
+              if (tempDate !== moment((item.dt - 10800 + this.timezone) * 1000).format("l")) {
                 self.forecast.push(day);
                 day = [];
-                tempDate = moment(item.dt * 1000).format("l");
+                tempDate = moment((item.dt - 10800 + this.timezone) * 1000).format("l");
                 day.push({
                   place: {
                     lat: arr[1],
                     lon: arr[2]
                   },
                   time: {
-                    date: moment(item.dt * 1000).format("l"),
-                    time: moment(item.dt * 1000).format("HH:mm"),
+                    date: moment((item.dt - 10800 + this.timezone) * 1000).format("l"),
+                    time: moment((item.dt - 10800 + this.timezone) * 1000).format("HH:mm"),
                     weekday: capitalize(
-                      moment.weekdays(new Date(item.dt * 1000).getDay())
+                      moment.weekdays(new Date((item.dt - 10800 + this.timezone) * 1000).getDay())
                     )
                   },
                   temperature: item.main.temp,
@@ -159,17 +161,17 @@ export default {
                     lon: arr[2]
                   },
                   time: {
-                    date: moment(item.dt * 1000).format("l"),
-                    time: moment(item.dt * 1000).format("HH:mm"),
+                    date: moment((item.dt - 10800 + this.timezone) * 1000).format("l"),
+                    time: moment((item.dt - 10800 + this.timezone) * 1000).format("HH:mm"),
                     weekday: capitalize(
-                      moment.weekdays(new Date(item.dt * 1000).getDay())
+                      moment.weekdays(new Date((item.dt - 10800 + this.timezone) * 1000).getDay())
                     )
                   },
                   temperature: item.main.temp,
                   weather: item.weather[0].main
                 });
               }
-            }))
+            })}
         );
       //  this.value = {city :"gfchv"};
       axios
@@ -270,22 +272,23 @@ export default {
         })
         .then(
           response =>
-            (this.weather = response.data.list.forEach(item => {
+            { this.timezone = response.data.city.timezone;
+              response.data.list.forEach(item => {
               moment.locale("ru");
-              if (tempDate !== moment(item.dt * 1000).format("l")) {
+              if (tempDate !== moment((item.dt - 10800 + this.timezone) * 1000).format("l")) {
                 self.forecast.push(day);
                 day = [];
-                tempDate = moment(item.dt * 1000).format("l");
+                tempDate = moment((item.dt - 10800 + this.timezone) * 1000).format("l");
                 day.push({
                   place: {
                     lat: selectedOption.lat,
                     lon: selectedOption.lon
                   },
                   time: {
-                    date: moment(item.dt * 1000).format("l"),
-                    time: moment(item.dt * 1000).format("HH:mm"),
+                    date: moment((item.dt - 10800 + this.timezone) * 1000).format("l"),
+                    time: moment((item.dt - 10800 + this.timezone) * 1000).format("HH:mm"),
                     weekday: capitalize(
-                      moment.weekdays(new Date(item.dt * 1000).getDay())
+                      moment.weekdays(new Date((item.dt - 10800 + this.timezone) * 1000).getDay())
                     )
                   },
                   temperature: item.main.temp,
@@ -298,17 +301,17 @@ export default {
                     lon: selectedOption.lon
                   },
                   time: {
-                    date: moment(item.dt * 1000).format("l"),
-                    time: moment(item.dt * 1000).format("HH:mm"),
+                    date: moment((item.dt - 10800 + this.timezone) * 1000).format("l"),
+                    time: moment((item.dt - 10800 + this.timezone) * 1000).format("HH:mm"),
                     weekday: capitalize(
-                      moment.weekdays(new Date(item.dt * 1000).getDay())
+                      moment.weekdays(new Date((item.dt - 10800 + this.timezone) * 1000).getDay())
                     )
                   },
                   temperature: item.main.temp,
                   weather: item.weather[0].main
                 });
               }
-            }))
+            })}
         );
       this.$router.push({
         path: "/",
