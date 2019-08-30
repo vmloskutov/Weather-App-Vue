@@ -11,12 +11,6 @@ export default new Router({
       path: "/",
       name: "home",
       component: Home
-    },
-    {
-      path: "/:day",
-      name: "forecast",
-      props: true,
-      component: Home
     }
   ]
 });

@@ -114,10 +114,17 @@ export default {
   mounted() {
     if (this.$route.fullPath !== "/") {
       let path = this.$route.fullPath;
-      let arr = path.split("&");
-      arr[0] = arr[0].replace(/\/\?day=/, "");
-      arr[1] = arr[1].replace(/lat=/, "");
-      arr[2] = arr[2].replace(/lon=/, "");
+      //console.log(this.$route.query);
+      let adr = {
+        day: this.$route.query.day,
+        lat: this.$route.query.lat,
+        lon: this.$route.query.lon
+      };
+      //console.log(adr.day);
+      // let arr = path.split("&");
+      // arr[0] = arr[0].replace(/\/\?day=/, "");
+      // arr[1] = arr[1].replace(/lat=/, "");
+      // arr[2] = arr[2].replace(/lon=/, "");
       this.forecast = [];
       let day = [];
       let tempDate = null;
@@ -125,8 +132,8 @@ export default {
       axios
         .get(`https://api.openweathermap.org/data/2.5/forecast`, {
           params: {
-            lat: arr[1],
-            lon: arr[2],
+            lat: adr.lat,
+            lon: adr.lon,
             APPID: "31d8cd5bb9c6aec41d284a3c7b901c23"
           }
         })
@@ -145,8 +152,8 @@ export default {
               ).format("l");
               day.push({
                 place: {
-                  lat: arr[1],
-                  lon: arr[2]
+                  lat: adr.lat,
+                  lon: adr.lon
                 },
                 time: {
                   date: moment((item.dt - 10800 + this.timezone) * 1000).format(
@@ -169,8 +176,8 @@ export default {
             } else {
               day.push({
                 place: {
-                  lat: arr[1],
-                  lon: arr[2]
+                  lat: adr.lat,
+                  lon: adr.lon
                 },
                 time: {
                   date: moment((item.dt - 10800 + this.timezone) * 1000).format(
@@ -199,7 +206,7 @@ export default {
           params: {
             format: "json",
             apikey: "b1998c24-d2dc-4cd0-888c-b100bf713440",
-            geocode: arr[2] + "," + arr[1]
+            geocode: adr.lon + "," + adr.lat
           }
         })
         .then(
@@ -210,11 +217,11 @@ export default {
                   .GeoObject.description
             })
         );
-      let tempDay = moment(arr[0], "DD.MM.YYYY");
+      let tempDay = moment(adr.day, "MM/DD/YYYY");
       let tempToday = moment(new Date()).format("l");
       var diff = tempDay.diff(tempToday);
       diff = new moment.duration(diff);
-      console.log(diff.asDays());
+      //console.log(diff.asDays());
 
       this.$refs.myCarousel.index = diff.asDays();
     }
