@@ -104,6 +104,24 @@ p { margin: 1.375rem 0; }
   }
 }
 
+@media (max-width: 993px) {
+  .carousel {
+    .carousel-indicators {
+      bottom: -70px;
+    }
+    &-caption {
+
+    }
+    &-control {
+      &-next, &-prev {
+        top: 70px;
+        width: 2%;
+      }
+    }
+
+  }
+}
+
 .icon {
   position: relative;
   display: inline-block;
@@ -212,6 +230,10 @@ p { margin: 1.375rem 0; }
   height: 3.75em;
   margin: 0.375em 0 0 -2em;
   background: currentColor;
+}
+
+.carousel-item {
+      height: 250px;
 }
 
 .rain:after {
