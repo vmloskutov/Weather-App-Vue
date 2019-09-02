@@ -217,11 +217,17 @@ export default {
                   .GeoObject.description
             })
         );
-      let tempDay = moment(adr.day, "MM/DD/YYYY");
+      console.log(adr.day);
+      console.log(moment(new Date()));
+      let tempDay = moment(adr.day, "DD/MM/YYYY");
+      console.log(tempDay);
+
       let tempToday = moment(new Date()).format("l");
+      console.log(tempToday);
       var diff = tempDay.diff(tempToday);
+      console.log(diff);
       diff = new moment.duration(diff);
-      //console.log(diff.asDays());
+      console.log(diff.asDays());
 
       this.$refs.myCarousel.index = diff.asDays();
     }
