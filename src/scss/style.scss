@@ -105,7 +105,11 @@ p { margin: 1.375rem 0; }
 }
 
 @media (max-width: 993px) {
+
   .carousel {
+    &-item {
+          height: 250px;
+    }
     .carousel-indicators {
       bottom: -70px;
     }
@@ -232,9 +236,7 @@ p { margin: 1.375rem 0; }
   background: currentColor;
 }
 
-.carousel-item {
-      height: 250px;
-}
+
 
 .rain:after {
   content: '';
